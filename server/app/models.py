@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from flask_restful import fields
+
 from .shared import db
 
 
@@ -5,15 +9,28 @@ class User(db.Model):
 
     __tablename__ = 'getin_user'
 
+    resource_fields = {
+        'id': fields.Integer,
+        'name': fields.String,
+        'corporation': fields.String,
+        'alliance': fields.String,
+        'editor': fields.Boolean,
+        'admin': fields.Boolean,
+    }
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
     corporation = db.Column(db.String)
     alliance = db.Column(db.String)
+    editor = db.Column(db.Boolean, default=False)
+    admin = db.Column(db.Boolean, default=False)
 
-    def __init__(self, name, corporation, alliance):
+    def __init__(self, name, corporation, alliance, editor=False, admin=False):
         self.name = name
         self.corporation = corporation
         self.alliance = alliance
+        self.editor = editor
+        self.admin = admin
 
     @property
     def is_authenticated(self):
@@ -36,3 +53,55 @@ class User(db.Model):
 
     def __str__(self):
         return '<User-{}>'.format(self.name)
+
+
+class Category(db.Model):
+
+    resource_fields = {}
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    pages = db.relationship('Page', backref='category', lazy='dynamic')
+
+    def __init__(self, name):
+        self.name = name
+
+
+class Page(db.Model):
+
+    resource_fields = {}
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    content = db.Column(db.String)
+    deleted = db.Column(db.Boolean)
+
+    def __init__(self, name, category_id, content=''):
+        self.name = name
+        self.category_id = category_id
+        self.content = content
+        self.deleted = False
+
+
+class Edit(db.Model):
+
+    resource_fields = {}
+
+    id = db.Column(db.Integer, primary_key=True)
+    page_id = db.Column(db.Integer, db.ForeignKey('page.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('getin_user.id'))
+    new_content = db.Column(db.String)
+    deleted = db.Column(db.Boolean)
+    timestamp = db.Column(db.DateTime)
+    approved_by = db.Column(db.String)
+
+    def __init__(self, page_id, category_id, user_id, new_content, deleted=False, approved_by='*server*'):
+        self.page_id = page_id
+        self.category_id = category_id
+        self.user_id = user_id
+        self.new_content = new_content
+        self.deleted = deleted
+        self.timestamp = datetime.utcnow()
+        self.approved_by = approved_by
