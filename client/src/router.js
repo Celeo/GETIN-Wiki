@@ -7,6 +7,7 @@ import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Logout from './pages/Logout'
 import LoginCallback from './pages/LoginCallback'
+import Index from './pages/Index'
 
 
 Vue.use(VueRouter)
@@ -15,7 +16,8 @@ const routes = [
   { path: '/', component: Landing, name: 'Landing' },
   { path: '/login', component: Login, name: 'Login' },
   { path: '/logout', component: Logout, name: 'Logout' },
-  { path: '/eve/callback', component: LoginCallback, name: 'LoginCallback' }
+  { path: '/eve/callback', component: LoginCallback, name: 'LoginCallback' },
+  { path: '/index', component: Index, name: 'Index' }
 ]
 
 const router = new VueRouter({

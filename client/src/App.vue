@@ -9,16 +9,21 @@
             :to="{ name: 'Landing' }"
             v-bind:class="{ 'is-active': $router.currentRoute.name == 'Landing' }"
           ) Home
-          div(v-if="!loggedIn")
-            router-link.nav-item.is-tab(
-              :to="{ name: 'Login' }"
-              v-bind:class="{ 'is-active': $router.currentRoute.name == 'Login' }"
-            ) Log in
-          div(v-if="loggedIn")
-            router-link.nav-item.is-tab(
-              :to="{ name: 'Logout' }"
-              v-bind:class="{ 'is-active': $router.currentRoute.name == 'Logout' }"
-            ) Log out
+          router-link.nav-item.is-tab(
+            :to="{ name: 'Login' }"
+            v-bind:class="{ 'is-active': $router.currentRoute.name == 'Login' }"
+            v-if="!loggedIn"
+          ) Log in
+          router-link.nav-item.is-tab(
+            :to="{ name: 'Index' }"
+            v-bind:class="{ 'is-active': $router.currentRoute.name == 'Index' }"
+            v-if="loggedIn"
+          ) Index
+          router-link.nav-item.is-tab(
+            :to="{ name: 'Logout' }"
+            v-bind:class="{ 'is-active': $router.currentRoute.name == 'Logout' }"
+            v-if="loggedIn"
+          ) Log out
     transition(name="fade" mode="out-in")
       router-view
 </template>
