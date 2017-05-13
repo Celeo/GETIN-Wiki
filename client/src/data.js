@@ -9,6 +9,8 @@ const state = {
   token: null,
   name: null,
   inAlliance: false,
+  editor: false,
+  admin: false,
   axios: axios.create()
 }
 
@@ -18,6 +20,8 @@ const mutations = {
     state.token = token
     state.name = tokenData.name
     state.inAlliance = tokenData.inAlliance
+    state.editor = tokenData.editor
+    state.admin = tokenData.admin
     state.axios = axios.create({ headers: { Authorization: token } })
   },
 
@@ -25,6 +29,8 @@ const mutations = {
     state.token = null
     state.name = null
     state.inAlliance = false
+    state.editor = false
+    state.admin = false
     state.axios = axios.create()
   }
 }
@@ -44,6 +50,14 @@ const getters = {
 
   inAlliance(state) {
     return state.inAlliance
+  },
+
+  editor(state) {
+    return state.editor
+  },
+
+  admin(state) {
+    return state.admin
   },
 
   axios(state) {

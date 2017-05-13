@@ -21,7 +21,7 @@ def authenticate(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         try:
-            if get_user_from_token:
+            if get_user_from_token():
                 return f(*args, **kwargs)
             abort(401)
         except:
@@ -34,7 +34,7 @@ def restrict_editor(f):
     def wrapper(*args, **kwargs):
         try:
             user = get_user_from_token()
-            if user and user.editor:
+            if user and (user.editor or user.admin):
                 return f(*args, **kwargs)
             abort(401)
         except:

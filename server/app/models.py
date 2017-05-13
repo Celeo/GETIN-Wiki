@@ -57,7 +57,10 @@ class User(db.Model):
 
 class Category(db.Model):
 
-    resource_fields = {}
+    resource_fields = {
+        'id': fields.Integer,
+        'name': fields.String,
+    }
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -69,7 +72,20 @@ class Category(db.Model):
 
 class Page(db.Model):
 
-    resource_fields = {}
+    resource_fields = {
+        'id': fields.Integer,
+        'name': fields.String,
+        'category_id': fields.Integer,
+        'deleted': fields.Integer,
+    }
+
+    resource_fields_full = {
+        'id': fields.Integer,
+        'name': fields.String,
+        'content': fields.String,
+        'category_id': fields.Integer,
+        'deleted': fields.Integer,
+    }
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -86,7 +102,16 @@ class Page(db.Model):
 
 class Edit(db.Model):
 
-    resource_fields = {}
+    resource_fields = {
+        'id': fields.Integer,
+        'page_id': fields.Integer,
+        'category_id': fields.Integer,
+        'user_id': fields.Integer,
+        'new_content': fields.String,
+        'deleted': fields.Boolean,
+        'timestamp': fields.DateTime,
+        'approved_by': fields.String,
+    }
 
     id = db.Column(db.Integer, primary_key=True)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'))

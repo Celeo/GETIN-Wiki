@@ -5,6 +5,12 @@
         div.nav-left
           router-link#brand.nav-item(:to="'/'") Wiki
         div.nav-center.nav-menu
+          div.nav-item(v-if="loggedIn")
+            div.block
+              button.button.is-info(@click="addNewPage")
+                b-icon(icon="plus")
+                span New page
+        div.nav-right.nav-menu
           router-link.nav-item.is-tab(
             :to="{ name: 'Landing' }"
             v-bind:class="{ 'is-active': $router.currentRoute.name == 'Landing' }"
@@ -20,6 +26,11 @@
             v-if="loggedIn"
           ) Index
           router-link.nav-item.is-tab(
+            :to="{ name: 'Admin' }"
+            v-bind:class="{ 'is-active': $router.currentRoute.name == 'Admin' }"
+            v-if="$store.getters.admin"
+          ) Admin
+          router-link.nav-item.is-tab(
             :to="{ name: 'Logout' }"
             v-bind:class="{ 'is-active': $router.currentRoute.name == 'Logout' }"
             v-if="loggedIn"
@@ -29,6 +40,9 @@
 </template>
 
 <script>
+import NewPageModal from './components/NewPageModal'
+
+
 export default {
   computed: {
     loggedIn() {
@@ -36,6 +50,20 @@ export default {
     },
     member() {
       return this.$store.getters.inAlliance
+    }
+  },
+  methods: {
+    addNewPage() {
+      this.$modal.open({
+        component: NewPageModal,
+        width: 400,
+        programmatic: true,
+        props: {
+          // workaround for https://github.com/rafaelpimpa/buefy/issues/55
+          store: this.$store,
+          router: this.$router
+        }
+      })
     }
   }
 }
@@ -64,6 +92,10 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+.button {
+  margin-left: 5px;
+}
+
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 </style>
@@ -73,6 +105,9 @@ $link-focus-border: $primary;
 #brand
   font-weight 600
   font-size 24px
+
+label.label
+  font-weight 600 !important
 
 .fade-enter-active, .fade-leave-active
   transition opacity .2s

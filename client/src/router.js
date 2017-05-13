@@ -7,7 +7,10 @@ import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Logout from './pages/Logout'
 import LoginCallback from './pages/LoginCallback'
+import Admin from './pages/Admin'
 import Index from './pages/Index'
+import AddNewPage from './pages/AddNewPage'
+import ViewPage from './pages/ViewPage'
 
 
 Vue.use(VueRouter)
@@ -17,7 +20,10 @@ const routes = [
   { path: '/login', component: Login, name: 'Login' },
   { path: '/logout', component: Logout, name: 'Logout' },
   { path: '/eve/callback', component: LoginCallback, name: 'LoginCallback' },
-  { path: '/index', component: Index, name: 'Index' }
+  { path: '/admin', component: Admin, name: 'Admin' },
+  { path: '/index', component: Index, name: 'Index' },
+  { path: '/add/:name', component: AddNewPage, name: 'AddNewPage' },
+  { path: '/page/:category/:page', component: ViewPage, name: 'ViewPage' }
 ]
 
 const router = new VueRouter({

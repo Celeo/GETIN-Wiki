@@ -8,6 +8,9 @@ from .models import db
 from .shared import eveapi, config
 from .views.login import EVE_SSO_Resource
 from .views.account import Account_Resource
+from .views.category import CategoriesResource, CategoryResource, IndexResource
+from .views.page import PagesResource, PageResource, LookupResource
+from .views.admin import UserResource
 
 
 app = Flask(__name__)
@@ -39,3 +42,10 @@ def index():
 
 api.add_resource(EVE_SSO_Resource, '/eve/sso')
 api.add_resource(Account_Resource, '/account')
+api.add_resource(CategoriesResource, '/category')
+api.add_resource(UserResource, '/admin')
+api.add_resource(CategoryResource, '/category/<int:id>')
+api.add_resource(PagesResource, '/page')
+api.add_resource(PageResource, '/page/<int:id>')
+api.add_resource(LookupResource, '/lookup/<category_name>/<page_name>')
+api.add_resource(IndexResource, '/index')
