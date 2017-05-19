@@ -39,8 +39,12 @@ class IndexResource(Resource):
     method_decorators = [authenticate]
 
     def get(self):
-        return {
-            category.name: [
-                marshal(page, Page.resource_fields) for page in category.pages.filter_by(deleted=False).all()
-            ] for category in Category.query.all()
-        }
+        return [
+            {
+                'name': category.name,
+                'pages': [
+                    marshal(page, Page.resource_fields) for page in
+                    category.pages.filter_by(deleted=False).order_by(Page.name.desc()).all()
+                ]
+            } for category in Category.query.order_by(Category.name.desc()).all()
+        ]
