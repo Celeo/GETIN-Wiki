@@ -53,12 +53,14 @@ class PageResource(Resource):
             page.id,
             page.category_name,
             get_user_from_token().id,
-            request.json['name'],
-            request.json['content']
+            request.json.get('name', page.name),
+            request.json.get('content', page.content),
+            request.json.get('deleted', page.deleted)
         ))
-        page.name = request.json['name']
-        page.category_id = int(request.json['category_id'])
-        page.content = request.json['content']
+        page.name = request.json.get('name', page.name)
+        page.category_id = int(request.json.get('category_id', page.category_id))
+        page.content = request.json.get('content', page.content)
+        page.deleted = request.json.get('deleted', page.deleted)
         db.session.commit()
         return {}, 204
 
@@ -68,9 +70,10 @@ class PageResource(Resource):
         page = Page.query.get(id)
         db.session.add(Edit(
             page.id,
-            page.category_id,
-            get_user_from_token(),
-            request.json['content'],
+            page.category_name,
+            get_user_from_token().id,
+            page.name,
+            page.content,
             deleted=True
         ))
         page.deleted = True

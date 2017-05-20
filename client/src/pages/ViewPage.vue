@@ -9,6 +9,11 @@
           div.message-body
             p If you want to create it, do so using the <strong>Add new page</strong> button above
       div(v-if="!error && page")
+        div(v-if="page.deleted")
+          b-message(type="is-danger" has-icon).
+            This page has been deleted.
+            If you want to restore it, use the Edit button on the right and then the Restore button.
+          br
         nav.level
           div.level-left
             div.level-item

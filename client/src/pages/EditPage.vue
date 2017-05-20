@@ -4,7 +4,16 @@
       div(v-if="error")
         server-error
       div.content(v-if="!error && originalPage")
-        nav.level
+        nav.level(v-if="originalPage.deleted")
+          div.level-left
+            div.level-item
+              h1.title This page was deleted
+          div.level-right
+            div.level-item
+              button.button.is-success(@click="restorePage")
+                b-icon(icon="upload")
+                span Restore page
+        nav.level(v-else)
           div.level-left
             div.level-item
               b-field(label="Name")
@@ -29,8 +38,11 @@
                 button.button.is-success(@click="save" v-bind:disabled="!dirty")
                   b-icon(icon="floppy-o")
                   span Save changes
+                button.button.is-danger(v-if="!originalPage.deleted" @click="deletePage")
+                  b-icon(icon="trash-o")
+                  span Delete page
         hr
-        div.columns
+        div.columns(v-if="!originalPage.deleted")
           div#panel-input.column.is-half
             p.control
               textarea#entry.textarea(v-model="newContent")
@@ -131,6 +143,50 @@ export default {
         })
       } else {
         this.$router.push(this.pageUrlData)
+      }
+    },
+    deletePage() {
+      this.$dialog.confirm({
+        title: 'Confirm',
+        message: 'Are you sure you want to delete this page?',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: async () => {
+          try {
+            await this.$store.getters.axios.delete(`${Vue.config.SERVER_URL}page/${this.$route.params.pageId}`)
+            this.$toast.open({
+              message: 'Page deleted',
+              type: 'is-success'
+            })
+            this.$router.push({ name: 'Index' })
+          } catch (error) {
+            console.error(error)
+            Vue.nextTick(() => {
+              this.$dialog.alert({
+                message: 'There was an error deleting the page',
+                type: 'is-danger',
+                hasIcon: true
+              })
+            })
+          }
+        }
+      })
+    },
+    async restorePage() {
+      try {
+        await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}page/${this.$route.params.pageId}`, { deleted: false })
+        this.$toast.open({
+          message: 'Page restored',
+          type: 'is-success'
+        })
+        await this.loadData()
+      } catch (error) {
+        console.error(error)
+        this.$dialog.alert({
+          message: 'There was an error restoring the page',
+          type: 'is-danger',
+          hasIcon: true
+        })
       }
     }
   },
