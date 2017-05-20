@@ -26,7 +26,7 @@
                 button.button.is-warning(v-if="dirty" @click="checkAbandon")
                   b-icon(icon="ban")
                   span Abandon changes
-                button.button.is-success(@click="save")
+                button.button.is-success(@click="save" v-bind:disabled="!dirty")
                   b-icon(icon="floppy-o")
                   span Save changes
         hr

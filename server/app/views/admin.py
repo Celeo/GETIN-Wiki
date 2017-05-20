@@ -11,9 +11,11 @@ class UserResource(Resource):
 
     @marshal_with(User.resource_fields)
     def get(self):
+        """ Return all users """
         return User.query.order_by('id').all()
 
-    def post(self):
+    def put(self):
+        """ Modify a user """
         user = User.query.get(int(request.json['id']))
         if request.json['role'] == 'editor':
             user.editor = request.json['action'] == 'promote'

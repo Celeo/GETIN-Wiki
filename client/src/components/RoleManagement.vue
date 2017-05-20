@@ -96,7 +96,7 @@ export default {
         hasIcon: true,
         onConfirm: async () => {
           try {
-            await this.$store.getters.axios.post(`${Vue.config.SERVER_URL}admin`, {
+            await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}admin`, {
               action: changeAction.direction,
               role: changeAction.role,
               id: this.selectedUser.id

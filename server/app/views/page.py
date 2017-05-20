@@ -10,10 +10,12 @@ class PagesResource(Resource):
     @authenticate
     @marshal_with(Page.resource_fields)
     def get(self):
+        """ Return all pages (that are not deleted) """
         return Page.query.filter_by(deleted=False).all()
 
     @restrict_editor
     def post(self):
+        """ Create a new page """
         name = request.json['name']
         category_id = request.json['category_id']
         page = Page.query.filter_by(name=name, category_id=category_id).first()
@@ -40,10 +42,12 @@ class PageResource(Resource):
     @authenticate
     @marshal_with(Page.resource_fields_full)
     def get(self, id):
+        """ Return the data for this page """
         return Page.query.get(id)
 
     @restrict_editor
     def put(self, id):
+        """ Edit the page """
         page = Page.query.get(id)
         db.session.add(Edit(
             page.id,
@@ -60,6 +64,7 @@ class PageResource(Resource):
 
     @restrict_editor
     def delete(self, id):
+        """ Delete the page """
         page = Page.query.get(id)
         db.session.add(Edit(
             page.id,
@@ -79,6 +84,7 @@ class LookupResource(Resource):
 
     @marshal_with(Page.resource_fields_full)
     def get(self, category_name, page_name):
+        """ Return the page by its name and category name """
         for page in Page.query.filter_by(name=page_name).all():
             if page.category.name == category_name:
                 return page

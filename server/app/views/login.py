@@ -9,11 +9,13 @@ from ..models import User
 class EVE_SSO_Resource(Resource):
 
     def get(self):
+        """ Get the EVE SSO login URL """
         return {
             'url': eveapi['crest'].get_authorize_url()
         }
 
     def post(self):
+        """ Log the user in using the EVE SSO, CREST, and XML APIs """
         try:
             code = request.json['code']
             auth = eveapi['crest'].authenticate(code)
