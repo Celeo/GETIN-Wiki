@@ -14,15 +14,15 @@
                 b-icon(icon="arrow-left")
                 span Back to page
         hr
-        table.table(v-if="showingList")
+        table.table(v-if="revisionId === 0")
           thead
             tr
               th View
-              th Global id
               th Page name
               th Category
               th Editor
               th Timestamp
+              th Global revision id
           tfoot
           tbody
             tr(v-for="history in histories")
@@ -30,12 +30,12 @@
                 b-tooltip(label="View this version" type="is-dark")
                   a.button-control(@click="viewVersion(history.id)")
                     b-icon(icon="eye")
-              td {{ history.id }}
               td {{ history.new_name }}
               td {{ history.category_name }}
               td {{ history.user_name }}
               td {{ history.timestamp_print }}
-        div(v-if="!showingList")
+              td {{ history.id }}
+        div(v-if="revisionId !== 0")
           nav.level
             div.level-left
               div.level-item
@@ -47,7 +47,8 @@
                 button.button.is-warning(@click="rollback")
                   b-icon(icon="undo")
                   span Rollback to this version
-          textarea#revisionContent.textarea(v-model="revisionContent" disabled="true")
+          b-message(v-if="selectedRevision.deleted" type="is-danger") This version of the page was deleted
+          textarea#revisionContent.textarea(v-model="selectedRevision.new_content" disabled="true")
 </template>
 
 <script>
@@ -64,13 +65,15 @@ export default {
       error: false,
       currentPage: null,
       histories: [],
-      showingList: true,
-      selectedVersion: 0
+      revisionId: 0
     }
   },
   computed: {
     pageUrlData() {
       return { name: 'ViewPage', params: { category: this.currentPage.category_name, page: this.currentPage.name } }
+    },
+    selectedRevision() {
+      return this.histories.filter(e => e.id === this.revisionId)[0]
     }
   },
   methods: {
@@ -87,13 +90,10 @@ export default {
       }
     },
     viewVersion(historyId) {
-      this.showingList = false
-      this.revisionContent = this.histories.filter(e => e.id === historyId)[0].new_content
-      this.selectedVersion = historyId
+      this.revisionId = historyId
     },
     viewList() {
-      this.showingList = true
-      this.selectedVersion = 0
+      this.revisionId = 0
     },
     rollback() {
       this.$dialog.confirm({
@@ -103,7 +103,7 @@ export default {
         hasIcon: true,
         onConfirm: async () => {
           try {
-            const response = await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}rollback/${this.selectedVersion}`)
+            const response = await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}rollback/${this.revisionId}`)
             this.$toast.open({
               message: 'Page saved',
               type: 'is-success'

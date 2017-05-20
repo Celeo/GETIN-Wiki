@@ -92,3 +92,14 @@ class LookupResource(Resource):
             if page.category.name == category_name:
                 return page
         return {}, 404
+
+
+class DeletedPagesResource(Resource):
+
+    # For now, this endpoint is accessed by the admin page, but
+    # the content here isn't anything special, so restrict to editors.
+    method_decorators = [restrict_editor]
+
+    @marshal_with(Page.resource_fields)
+    def get(self):
+        return Page.query.filter_by(deleted=True).all()

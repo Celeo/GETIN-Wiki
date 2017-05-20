@@ -8,7 +8,7 @@ from .models import db
 from .shared import eveapi, config
 from .views.login import EVE_SSO_Resource
 from .views.category import CategoriesResource, CategoryResource, IndexResource
-from .views.page import PagesResource, PageResource, LookupResource
+from .views.page import PagesResource, PageResource, LookupResource, DeletedPagesResource
 from .views.edit import EditResource, RollbackResource
 from .views.admin import UserResource
 
@@ -50,3 +50,4 @@ api.add_resource(EditResource, '/history/<int:page_id>')
 api.add_resource(RollbackResource, '/rollback/<int:id>')
 api.add_resource(LookupResource, '/lookup/<category_name>/<page_name>')
 api.add_resource(IndexResource, '/index')
+api.add_resource(DeletedPagesResource, '/deleted_pages')
