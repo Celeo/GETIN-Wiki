@@ -11,6 +11,8 @@ import Admin from './pages/Admin'
 import Index from './pages/Index'
 import AddNewPage from './pages/AddNewPage'
 import ViewPage from './pages/ViewPage'
+import EditPage from './pages/EditPage'
+import HistoryPage from './pages/HistoryPage'
 
 
 Vue.use(VueRouter)
@@ -23,7 +25,9 @@ const routes = [
   { path: '/admin', component: Admin, name: 'Admin' },
   { path: '/index', component: Index, name: 'Index' },
   { path: '/add/:name', component: AddNewPage, name: 'AddNewPage' },
-  { path: '/page/:category/:page', component: ViewPage, name: 'ViewPage' }
+  { path: '/page/:category/:page', component: ViewPage, name: 'ViewPage' },
+  { path: '/edit/:pageId', component: EditPage, name: 'EditPage' },
+  { path: '/history/:pageId', component: HistoryPage, name: 'HistoryPage' }
 ]
 
 const router = new VueRouter({

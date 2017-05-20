@@ -2,6 +2,7 @@
   section.section
     div.container
       h1.title Category management
+      hr
       div(v-if="error")
         server-error
       nav.level(v-if="!error")

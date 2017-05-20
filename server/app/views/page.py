@@ -21,6 +21,14 @@ class PagesResource(Resource):
             page = Page(name=name, category_id=category_id)
             db.session.add(page)
             db.session.commit()
+            db.session.add(Edit(
+                page.id,
+                page.category_name,
+                get_user_from_token().id,
+                request.json['name'],
+                ''
+            ))
+            db.session.commit()
         return {
             'category': page.category.name,
             'page': page.name,
@@ -39,12 +47,14 @@ class PageResource(Resource):
         page = Page.query.get(id)
         db.session.add(Edit(
             page.id,
-            page.category_id,
-            get_user_from_token(),
+            page.category_name,
+            get_user_from_token().id,
+            request.json['name'],
             request.json['content']
         ))
+        page.name = request.json['name']
         page.category_id = int(request.json['category_id'])
-        page.content = int(request.json['content'])
+        page.content = request.json['content']
         db.session.commit()
         return {}, 204
 

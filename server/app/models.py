@@ -25,7 +25,7 @@ class User(db.Model):
     editor = db.Column(db.Boolean, default=False)
     admin = db.Column(db.Boolean, default=False)
 
-    def __init__(self, name, corporation, alliance, editor=False, admin=False):
+    def __init__(self, name, corporation, alliance, editor=True, admin=False):
         self.name = name
         self.corporation = corporation
         self.alliance = alliance
@@ -35,7 +35,6 @@ class User(db.Model):
         # TODO remove test code
         if name == 'Celeo Servasse':
             self.admin = True
-            self.editor = True
 
     @property
     def is_authenticated(self):
@@ -81,6 +80,7 @@ class Page(db.Model):
         'id': fields.Integer,
         'name': fields.String,
         'category_id': fields.Integer,
+        'category_name': fields.String,
         'deleted': fields.Integer,
     }
 
@@ -89,6 +89,7 @@ class Page(db.Model):
         'name': fields.String,
         'content': fields.String,
         'category_id': fields.Integer,
+        'category_name': fields.String,
         'deleted': fields.Integer,
     }
 
@@ -97,6 +98,7 @@ class Page(db.Model):
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     content = db.Column(db.String)
     deleted = db.Column(db.Boolean)
+    edits = db.relationship('Edit', backref='page', lazy='dynamic')
 
     def __init__(self, name, category_id, content=''):
         self.name = name
@@ -104,34 +106,64 @@ class Page(db.Model):
         self.content = content
         self.deleted = False
 
+    @property
+    def category_name(self):
+        return self.category.name
+
 
 class Edit(db.Model):
 
     resource_fields = {
         'id': fields.Integer,
         'page_id': fields.Integer,
-        'category_id': fields.Integer,
+        'category_name': fields.String,
         'user_id': fields.Integer,
+        'new_name': fields.String,
+        'deleted': fields.Boolean,
+        'timestamp': fields.DateTime,
+        'approved_by': fields.String,
+        'user_name': fields.String,
+        'timestamp_print': fields.String
+    }
+
+    resource_fields_full = {
+        'id': fields.Integer,
+        'page_id': fields.Integer,
+        'category_name': fields.String,
+        'user_id': fields.Integer,
+        'new_name': fields.String,
         'new_content': fields.String,
         'deleted': fields.Boolean,
         'timestamp': fields.DateTime,
         'approved_by': fields.String,
+        'user_name': fields.String,
+        'timestamp_print': fields.String
     }
 
     id = db.Column(db.Integer, primary_key=True)
     page_id = db.Column(db.Integer, db.ForeignKey('page.id'))
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category_name = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('getin_user.id'))
+    new_name = db.Column(db.String)
     new_content = db.Column(db.String)
     deleted = db.Column(db.Boolean)
     timestamp = db.Column(db.DateTime)
     approved_by = db.Column(db.String)
 
-    def __init__(self, page_id, category_id, user_id, new_content, deleted=False, approved_by='*server*'):
+    def __init__(self, page_id, category_name, user_id, new_name, new_content, deleted=False, approved_by='*server*'):
         self.page_id = page_id
-        self.category_id = category_id
+        self.category_name = category_name
         self.user_id = user_id
+        self.new_name = new_name
         self.new_content = new_content
         self.deleted = deleted
         self.timestamp = datetime.utcnow()
         self.approved_by = approved_by
+
+    @property
+    def user_name(self):
+        return User.query.get(self.user_id).name
+
+    @property
+    def timestamp_print(self):
+        return self.timestamp.strftime('%b %d, %Y @ %H:%M:%S')

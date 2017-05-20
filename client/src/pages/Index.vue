@@ -4,13 +4,17 @@
       div(v-if="error")
         server-error
       div.content(v-else)
-        div(v-for="category of categories")
+        div(v-if="categories.length > 0" v-for="category of categories")
           h2.subtitle {{ category.name }}
           hr
           aside.menu
             ul.menu-list
-              li(v-for="page in category.pages")
+              li(v-if="category.pages.length > 0" v-for="page in category.pages")
                 router-link(:to="{ name: 'ViewPage', params: { category: category.name, page: page.name } }") {{ page.name }}
+              span(v-if="category.pages.length === 0") No pages in this category
+          div.spacer
+        div(v-if="categories.length === 0")
+          p No pages have been created.
 </template>
 
 <script>
@@ -40,3 +44,8 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.spacer
+  height 1em
+</style>

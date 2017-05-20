@@ -1,7 +1,7 @@
 <template lang="pug">
-div
-  role-management
-  category-management
+  div
+    role-management
+    category-management
 </template>
 
 <script>

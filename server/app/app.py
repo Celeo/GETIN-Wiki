@@ -10,6 +10,7 @@ from .views.login import EVE_SSO_Resource
 from .views.account import Account_Resource
 from .views.category import CategoriesResource, CategoryResource, IndexResource
 from .views.page import PagesResource, PageResource, LookupResource
+from .views.history import HistoryResource
 from .views.admin import UserResource
 
 
@@ -47,5 +48,6 @@ api.add_resource(UserResource, '/admin')
 api.add_resource(CategoryResource, '/category/<int:id>')
 api.add_resource(PagesResource, '/page')
 api.add_resource(PageResource, '/page/<int:id>')
+api.add_resource(HistoryResource, '/history/<int:page_id>')
 api.add_resource(LookupResource, '/lookup/<category_name>/<page_name>')
 api.add_resource(IndexResource, '/index')
