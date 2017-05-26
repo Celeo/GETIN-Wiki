@@ -28,7 +28,7 @@
                   b-icon(icon="history")
                   span History
         hr
-        div.content(v-html="markdown")
+        div#rendered-content.content(v-html="markdown")
 </template>
 
 <script>
@@ -61,9 +61,39 @@ export default {
         )
         this.page = response.data
         this.error = false
+        Vue.nextTick(() => {
+          this.addLinkListeners()
+        })
       } catch (error) {
         console.error(error)
         this.error = true
+      }
+    },
+    addLinkListeners() {
+      const links = document.getElementById('rendered-content').getElementsByTagName('a')
+      const regexExternal = /http(s?):\/\//
+      const regexPage = /([a-zA-Z0-9-_ ]+)\/([a-zA-Z0-9-_ ]+)/
+      for (let link of links) {
+        const href = link.getAttribute('href')
+        if (regexExternal.exec(href)) {
+          // don't stop external links
+          continue
+        }
+        let match = regexPage.exec(href)
+        if (match === null) {
+          // don't stop other weird links
+          continue
+        }
+        link.addEventListener('click', (event) => {
+          try {
+            // try to nav to the other page with the router instead of making a full request
+            const [category, page] = href.split('/')
+            this.$router.push({ name: 'ViewPage', params: { category: category, page: page } })
+            event.preventDefault()
+          } catch (err) {
+            // just allow the link to act like a normal link
+          }
+        })
       }
     }
   },

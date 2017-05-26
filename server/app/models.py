@@ -32,10 +32,6 @@ class User(db.Model):
         self.editor = editor
         self.admin = admin
 
-        # TODO remove test code
-        if name == 'Celeo Servasse':
-            self.admin = True
-
     @property
     def is_authenticated(self):
         return True

@@ -49,7 +49,7 @@ class IndexResource(Resource):
                 'name': category.name,
                 'pages': [
                     marshal(page, Page.resource_fields) for page in
-                    category.pages.filter_by(deleted=False).order_by(Page.name.desc()).all()
+                    category.pages.filter_by(deleted=False).order_by(Page.name.asc()).all()
                 ]
-            } for category in Category.query.order_by(Category.name.desc()).all()
+            } for category in Category.query.order_by(Category.name.asc()).all()
         ]
