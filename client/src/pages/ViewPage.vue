@@ -28,7 +28,7 @@
                   b-icon(icon="history")
                   span History
         hr
-        div#rendered-content.content(v-html="markdown")
+        div#rendered-content.content(v-html="markdown" v-if="!loading")
 </template>
 
 <script>
@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       error: false,
+      loading: true,
       page: null
     }
   },
@@ -56,6 +57,7 @@ export default {
   methods: {
     async loadData() {
       try {
+        this.loading = true
         const response = await this.$store.getters.axios.get(
           `${Vue.config.SERVER_URL}lookup/${this.$route.params.category}/${this.$route.params.page}`
         )
@@ -67,6 +69,8 @@ export default {
       } catch (error) {
         console.error(error)
         this.error = true
+      } finally {
+        this.loading = false
       }
     },
     addLinkListeners() {
