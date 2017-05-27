@@ -7,7 +7,7 @@
         div.nav-center.nav-menu
           div.nav-item(v-if="loggedIn")
             div.block
-              button.button.is-info(@click="addNewPage")
+              button.button.is-info(@click="newPageModalActive = true")
                 b-icon(icon="plus")
                 span New page
         div.nav-right.nav-menu
@@ -37,6 +37,12 @@
           ) Log out
     transition(name="fade" mode="out-in")
       router-view
+    b-modal(
+      v-bind:active.sync="newPageModalActive"
+      v-bind:component="NewPageModal"
+      v-bind:props="formProps"
+      v-bind:width="400"
+    )
 </template>
 
 <script>
@@ -44,26 +50,18 @@ import NewPageModal from './components/NewPageModal'
 
 
 export default {
+  data() {
+    return {
+      NewPageModal,
+      newPageModalActive: false
+    }
+  },
   computed: {
     loggedIn() {
       return this.$store.getters.isLoggedIn
     },
     member() {
       return this.$store.getters.inAlliance
-    }
-  },
-  methods: {
-    addNewPage() {
-      this.$modal.open({
-        component: NewPageModal,
-        width: 400,
-        programmatic: true,
-        props: {
-          // workaround for https://github.com/rafaelpimpa/buefy/issues/55
-          store: this.$store,
-          router: this.$router
-        }
-      })
     }
   }
 }

@@ -26,11 +26,6 @@ import Vue from 'vue'
 
 
 export default {
-  // workaround for https://github.com/rafaelpimpa/buefy/issues/55
-  props: [
-    'store',
-    'router'
-  ],
   data() {
     return {
       name: '',
@@ -40,7 +35,7 @@ export default {
   },
   async created() {
     try {
-      const response = await this.store.getters.axios.get(`${Vue.config.SERVER_URL}category`)
+      const response = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}category`)
       this.categories = response.data
     } catch (error) {
       console.error(error)
@@ -59,8 +54,8 @@ export default {
           name: this.name,
           category_id: this.categoryId
         }
-        const response = await this.store.getters.axios.post(`${Vue.config.SERVER_URL}page`, data)
-        this.router.push({
+        const response = await this.$store.getters.axios.post(`${Vue.config.SERVER_URL}page`, data)
+        this.$router.push({
           name: 'ViewPage',
           params: {
             category: response.data.category,
