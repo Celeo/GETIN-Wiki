@@ -40,7 +40,6 @@
     b-modal(
       v-bind:active.sync="newPageModalActive"
       v-bind:component="NewPageModal"
-      v-bind:props="formProps"
       v-bind:width="400"
     )
 </template>
