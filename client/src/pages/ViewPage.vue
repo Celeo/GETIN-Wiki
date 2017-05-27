@@ -17,7 +17,7 @@
         nav.level
           div.level-left
             div.level-item
-              h1.title {{ page.name }}
+              h1.title <span id="title-cat">{{ page.category_name }} /</span> {{ page.name }}
           div.level-right
             div.level-item
               div.block
@@ -107,3 +107,8 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+#title-cat
+  font-size 16px
+</style>
