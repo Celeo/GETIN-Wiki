@@ -13,7 +13,7 @@
                 router-link(:to="{ name: 'ViewPage', params: { category: category.name, page: page.name } }") {{ page.name }}
               span(v-if="category.pages.length === 0") No pages in this category
           div.spacer
-        div(v-if="categories.length === 0")
+        div(v-if="categories.length === 0 && !loading")
           p No pages have been created.
 </template>
 
@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       error: false,
+      loading: true,
       categories: []
     }
   },
@@ -40,6 +41,8 @@ export default {
     } catch (error) {
       console.error(error)
       this.error = true
+    } finally {
+      this.loading = false
     }
   }
 }
