@@ -11,7 +11,8 @@ const state = {
   inAlliance: false,
   editor: false,
   admin: false,
-  axios: axios.create()
+  axios: axios.create(),
+  postLoginDestination: null
 }
 
 const mutations = {
@@ -32,6 +33,16 @@ const mutations = {
     state.editor = false
     state.admin = false
     state.axios = axios.create()
+  },
+
+  SET_LOGIN_REDIRECT(state, payload) {
+    state.postLoginDestination = payload
+    window.localStorage.setItem('loginRedirect', payload)
+  },
+
+  CLEAR_LOGIN_REDIRECT(state) {
+    state.postLoginDestination = null
+    window.localStorage.clearItem('loginRedirect')
   }
 }
 
@@ -62,6 +73,10 @@ const getters = {
 
   axios(state) {
     return state.axios
+  },
+
+  postLoginDestination(state) {
+    return state.postLoginDestination
   }
 }
 

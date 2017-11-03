@@ -42,11 +42,12 @@ router.beforeEach((to, from, next) => {
   /*
     If the user is not logged in and not in the process of doing so or just
     looking at the landing page, redirect them away from their detination
-    to the landing page.
+    to the Login page.
   */
   if (['Login', 'Logout', 'Landing', 'LoginCallback'].indexOf(to.name) === -1) {
     if (!store.getters.isLoggedIn) {
-      next({ name: 'Landing' })
+      next({ name: 'Login' })
+      store.commit('SET_LOGIN_REDIRECT', to.path)
       return
     }
   }

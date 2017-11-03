@@ -33,6 +33,11 @@ if (token) {
   window.sessionStorage.removeItem('token')
 }
 
+const loginRedirect = window.localStorage.getItem('loginRedirect')
+if (loginRedirect) {
+  store.commit('SET_LOGIN_REDIRECT', loginRedirect)
+}
+
 new Vue({
   router,
   store,

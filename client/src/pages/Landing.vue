@@ -26,6 +26,14 @@
               i.fa.fa-github
 </template>
 
+<script>
+export default {
+  async created() {
+    this.$store.commit('CLEAR_LOGIN_REDIRECT')
+  }
+}
+</script>
+
 <style lang="stylus" scoped>
 section.span
   height 80vh

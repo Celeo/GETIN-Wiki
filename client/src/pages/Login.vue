@@ -1,6 +1,9 @@
 <template lang="pug">
   section.section
     div.container
+      article.message.is-warning(v-if="wasRedirected")
+        div.message-body
+          p You must log in to see that page.
       div(v-if="!error")
         h1.title Log in
         h2.subtitle Sign in with EVE's SSO
@@ -23,6 +26,11 @@ export default {
     return {
       url: '',
       error: false
+    }
+  },
+  computed: {
+    wasRedirected() {
+      return this.$store.getters.postLoginDestination !== null
     }
   },
   async created() {

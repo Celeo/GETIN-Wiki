@@ -33,7 +33,13 @@ export default {
       const tokenData = decode(token)
       window.sessionStorage.setItem('token', token)
       this.$store.commit('LOG_IN', { token, tokenData })
-      this.$router.push({ name: 'Landing' })
+      const loginRedirect = this.$store.getters.postLoginDestination
+      if (loginRedirect !== null) {
+        this.$router.push(loginRedirect)
+        this.$store.commit('CLEAR_LOGIN_REDIRECT')
+      } else {
+        this.$router.push({ name: 'Landing' })
+      }
       this.processing = false
       this.error = false
     } catch (err) {
