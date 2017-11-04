@@ -62,27 +62,26 @@ function loadLoginRedirect() {
   }
 }
 
+function createApp() {
+  new Vue({
+    router,
+    store,
+    el: '#app',
+    render: h => h(App)
+  })
+}
+
 loadServerUrl()
 const prom = loadJWT()
-
 if (prom !== null && typeof prom !== 'undefined') {
   prom.then(() => {
-    console.log('Loading login redirect inside promise from localStorage JWT')
     const loginRedirect = window.localStorage.getItem('loginRedirect')
     if (loginRedirect !== null) {
       router.push(loginRedirect)
-    } else {
-      router.push({ name: 'Landing' })
     }
+    createApp()
   })
 } else {
-  console.log('Loading login redirect outside of localStorage JWT processing')
   loadLoginRedirect()
+  createApp()
 }
-
-new Vue({
-  router,
-  store,
-  el: '#app',
-  render: h => h(App)
-})

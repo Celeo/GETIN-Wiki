@@ -46,6 +46,7 @@ router.beforeEach((to, from, next) => {
   */
   if (['Login', 'Logout', 'Landing', 'LoginCallback'].indexOf(to.name) === -1) {
     if (!store.getters.isLoggedIn) {
+      console.log('Router redirecting to login page')
       next({ name: 'Login' })
       store.commit('SET_LOGIN_REDIRECT', to.path)
       return
