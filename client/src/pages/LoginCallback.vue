@@ -29,10 +29,13 @@ export default {
     try {
       const code = window.location.href.match(/code=([0-9a-zA-Z_-]*)/)[1]
       const response = await this.$store.getters.axios.post(`${Vue.config.SERVER_URL}eve/sso`, { code })
-      const { token } = response.data
-      const tokenData = decode(token)
-      window.sessionStorage.setItem('token', token)
+
+      const { sessionToken, localToken } = response.data
+      const tokenData = decode(sessionToken)
+      window.localStorage.setItem('token', localToken)
+      const token = sessionToken
       this.$store.commit('LOG_IN', { token, tokenData })
+
       const loginRedirect = this.$store.getters.postLoginDestination
       if (loginRedirect !== null) {
         this.$router.push(loginRedirect)
@@ -40,6 +43,7 @@ export default {
       } else {
         this.$router.push({ name: 'Landing' })
       }
+
       this.processing = false
       this.error = false
     } catch (err) {

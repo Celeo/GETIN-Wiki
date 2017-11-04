@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from flask import request
 from flask_restful import Resource
 from jose import jwt
@@ -40,11 +42,15 @@ class EVE_SSO_Resource(Resource):
                 'corporation': corporation,
                 'inAlliance': user.in_alliance,
                 'editor': user.editor,
-                'admin': user.admin
+                'admin': user.admin,
+                'exp': datetime.utcnow() + timedelta(hours=24)
             }
-            token = jwt.encode(token_data, config['SECRET_KEY'])
+            long_token = jwt.encode(token_data, config['SECRET_KEY'])
+            token_data['exp'] = datetime.utcnow() + timedelta(hours=6)
+            short_token = jwt.encode(token_data, config['SECRET_KEY'])
             return {
-                'token': token
+                'sessionToken': long_token,
+                'localToken': short_token
             }
         except Exception as e:
             print(f'Exception: {e}')

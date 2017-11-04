@@ -7,6 +7,7 @@ from preston.xmlapi import Preston as XMLAPI
 from .models import db
 from .shared import eveapi, config
 from .views.login import EVE_SSO_Resource
+from .views.token import Token_Resource
 from .views.category import CategoriesResource, CategoryResource, IndexResource
 from .views.page import PagesResource, PageResource, LookupResource, DeletedPagesResource
 from .views.edit import EditResource, RollbackResource
@@ -41,6 +42,7 @@ def index():
 
 
 api.add_resource(EVE_SSO_Resource, '/eve/sso')
+api.add_resource(Token_Resource, '/tokens')
 api.add_resource(CategoriesResource, '/category')
 api.add_resource(UserResource, '/admin')
 api.add_resource(CategoryResource, '/category/<int:id>')

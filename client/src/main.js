@@ -12,30 +12,72 @@ Vue.use(Buefy, {
 })
 
 Vue.config.productionTip = false
-let url = ''
-if (process.env.NODE_ENV === 'development') {
-  url = 'http://localhost:5000/'
-} else {
-  url = window.location.origin + '/api/'
-}
-Vue.config.SERVER_URL = url
-console.log(`Server url: ${url}`)
 
-const token = window.sessionStorage.getItem('token')
-if (token) {
-  const tokenData = decode(token)
-  if (typeof tokenData.name !== 'undefined') {
-    store.commit('LOG_IN', { token, tokenData })
+
+function loadServerUrl() {
+  let url = ''
+  if (process.env.NODE_ENV === 'development') {
+    url = 'http://localhost:5000/'
   } else {
-    window.sessionStorage.removeItem('token')
+    url = window.location.origin + '/api/'
   }
-} else {
-  window.sessionStorage.removeItem('token')
+  Vue.config.SERVER_URL = url
+  console.log(`Server url: ${url}`)
 }
 
-const loginRedirect = window.localStorage.getItem('loginRedirect')
-if (loginRedirect) {
-  store.commit('SET_LOGIN_REDIRECT', loginRedirect)
+function loadJWT() {
+  let token, tokenData
+  token = window.localStorage.getItem('token')
+  if (token) {
+    tokenData = decode(token)
+    if (typeof tokenData.name !== 'undefined') {
+      console.log('Requesting new session JWT from backend using localStorage token')
+      // send this token to the backend to get a new session token
+      const prom = store.getters.axios.post(`${Vue.config.SERVER_URL}tokens`, { token })
+        .then(response => {
+          token = response.data.token
+          tokenData = decode(token)
+          window.sessionStorage.setItem('token', token)
+          console.log('Logging in via new sessionStorage token')
+          store.commit('LOG_IN', { token, tokenData })
+        }).catch(err => {
+          // on failure, just don't log the user in, and clear the bad token from localStorage
+          console.error(err)
+          window.localStorage.removeItem('token')
+        })
+      return prom
+    } else {
+      console.log('Unknown token in localStorage, removing it')
+      window.localStorage.removeItem('token')
+    }
+  } else {
+    console.log('No token in localStorage')
+  }
+}
+
+function loadLoginRedirect() {
+  const loginRedirect = window.localStorage.getItem('loginRedirect')
+  if (loginRedirect) {
+    store.commit('SET_LOGIN_REDIRECT', loginRedirect)
+  }
+}
+
+loadServerUrl()
+const prom = loadJWT()
+
+if (prom !== null && typeof prom !== 'undefined') {
+  prom.then(() => {
+    console.log('Loading login redirect inside promise from localStorage JWT')
+    const loginRedirect = window.localStorage.getItem('loginRedirect')
+    if (loginRedirect !== null) {
+      router.push(loginRedirect)
+    } else {
+      router.push({ name: 'Landing' })
+    }
+  })
+} else {
+  console.log('Loading login redirect outside of localStorage JWT processing')
+  loadLoginRedirect()
 }
 
 new Vue({

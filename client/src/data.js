@@ -42,7 +42,7 @@ const mutations = {
 
   CLEAR_LOGIN_REDIRECT(state) {
     state.postLoginDestination = null
-    window.localStorage.clearItem('loginRedirect')
+    window.localStorage.removeItem('loginRedirect')
   }
 }
 
