@@ -153,7 +153,7 @@ export default {
         hasIcon: true,
         onConfirm: async () => {
           try {
-            await this.$store.getters.axios.delete(`${Vue.config.SERVER_URL}page/${this.$route.params.pageId}`)
+            await this.$store.getters.axios.delete(`${Vue.config.SERVER_URL}wiki/page/${this.$route.params.pageId}`)
             this.$toast.open({
               message: 'Page deleted',
               type: 'is-success'
