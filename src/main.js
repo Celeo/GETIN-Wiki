@@ -33,7 +33,7 @@ function loadJWT() {
     if (typeof tokenData.name !== 'undefined') {
       console.log('Requesting new session JWT from backend using localStorage token')
       // send this token to the backend to get a new session token
-      const prom = store.getters.axios.post(`${Vue.config.SERVER_URL}tokens`, { token })
+      const prom = store.getters.axios.post(`${Vue.config.SERVER_URL}eve/tokens`, { token })
         .then(response => {
           token = response.data.token
           tokenData = decode(token)

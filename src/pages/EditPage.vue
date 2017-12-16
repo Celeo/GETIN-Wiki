@@ -89,11 +89,11 @@ export default {
   methods: {
     async loadData() {
       try {
-        const pageResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}page/${this.$route.params.pageId}`)
+        const pageResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}wiki/page/${this.$route.params.pageId}`)
         this.originalPage = pageResponse.data
         this.newTitle = this.originalPage.name
         this.newContent = this.originalPage.content
-        const categoriesResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}category`)
+        const categoriesResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}wiki/category`)
         this.categories = categoriesResponse.data
         this.newCategoryId = this.originalPage.category_id
         this.error = false
@@ -115,7 +115,7 @@ export default {
           category_id: this.newCategoryId,
           content: this.newContent
         }
-        await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}page/${this.$route.params.pageId}`, data)
+        await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}wiki/page/${this.$route.params.pageId}`, data)
         await this.loadData()
         this.$toast.open({
           message: 'Page saved',

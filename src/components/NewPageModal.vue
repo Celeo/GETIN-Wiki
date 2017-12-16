@@ -35,7 +35,7 @@ export default {
   },
   async created() {
     try {
-      const response = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}category`)
+      const response = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}wiki/category`)
       this.categories = response.data
     } catch (error) {
       console.error(error)
@@ -54,7 +54,7 @@ export default {
           name: this.name,
           category_id: this.categoryId
         }
-        const response = await this.$store.getters.axios.post(`${Vue.config.SERVER_URL}page`, data)
+        const response = await this.$store.getters.axios.post(`${Vue.config.SERVER_URL}wiki/page`, data)
         this.$router.push({
           name: 'ViewPage',
           params: {

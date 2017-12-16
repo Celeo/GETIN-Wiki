@@ -33,7 +33,7 @@
               td {{ history.new_name }}
               td {{ history.category_name }}
               td {{ history.user_name }}
-              td {{ history.timestamp_print }}
+              td {{ history.timestamp }}
               td {{ history.id }}
         div(v-if="revisionId !== 0")
           nav.level
@@ -48,7 +48,7 @@
                   b-icon(icon="undo")
                   span Rollback to this version
           b-message(v-if="selectedRevision.deleted" type="is-danger") This version of the page was deleted
-          textarea#revisionContent.textarea(v-model="selectedRevision.new_content" disabled="true")
+          textarea#revisionContent.textarea(v-model="selectedRevision.content" disabled="true")
 </template>
 
 <script>
@@ -79,9 +79,9 @@ export default {
   methods: {
     async loadData() {
       try {
-        const pageResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}page/${this.$route.params.pageId}`)
+        const pageResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}wiki/page/${this.$route.params.pageId}`)
         this.currentPage = pageResponse.data
-        const historyResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}history/${this.$route.params.pageId}`)
+        const historyResponse = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}wiki/page/${this.$route.params.pageId}/history`)
         this.histories = historyResponse.data
         this.error = false
       } catch (error) {
@@ -103,7 +103,7 @@ export default {
         hasIcon: true,
         onConfirm: async () => {
           try {
-            const response = await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}rollback/${this.revisionId}`)
+            const response = await this.$store.getters.axios.put(`${Vue.config.SERVER_URL}wiki/page/${this.$route.params.pageId}/rollback/${this.revisionId}`)
             this.$toast.open({
               message: 'Page saved',
               type: 'is-success'

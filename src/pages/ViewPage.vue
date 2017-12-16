@@ -17,7 +17,7 @@
         nav.level
           div.level-left
             div.level-item
-              h1.title <span id="title-cat">{{ page.category_name }} /</span> {{ page.name }}
+              h1.title <span id="title-cat">{{ $route.params.category }} /</span> {{  $route.params.page }}
           div.level-right
             div.level-item
               div.block
@@ -59,7 +59,7 @@ export default {
       try {
         this.loading = true
         const response = await this.$store.getters.axios.get(
-          `${Vue.config.SERVER_URL}lookup/${this.$route.params.category}/${this.$route.params.page}`
+          `${Vue.config.SERVER_URL}wiki/lookup/${this.$route.params.category}/${this.$route.params.page}`
         )
         this.page = response.data
         this.error = false

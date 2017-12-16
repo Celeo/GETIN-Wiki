@@ -35,7 +35,7 @@ export default {
   },
   async created() {
     try {
-      const response = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}index`)
+      const response = await this.$store.getters.axios.get(`${Vue.config.SERVER_URL}wiki/`)
       this.categories = response.data
       this.error = false
     } catch (error) {
