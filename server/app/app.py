@@ -1,8 +1,7 @@
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_cors import CORS
-from preston.crest import Preston as CREST
-from preston.xmlapi import Preston as XMLAPI
+from preston import Preston
 
 from .models import db
 from .shared import eveapi, config
@@ -25,13 +24,13 @@ db.app = app
 db.init_app(app)
 
 eveapi['user_agent'] = '? for GETIN alliance'
-eveapi['crest'] = CREST(
+eveapi['preston'] = Preston(
     user_agent=eveapi['user_agent'],
     client_id=app.config['EVE_OAUTH_CLIENT_ID'],
     client_secret=app.config['EVE_OAUTH_SECRET'],
     callback_url=app.config['EVE_OAUTH_CALLBACK']
 )
-eveapi['xml'] = XMLAPI(user_agent=eveapi['user_agent'])
+
 
 
 @app.route('/')

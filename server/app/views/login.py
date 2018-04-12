@@ -13,19 +13,24 @@ class EVE_SSO_Resource(Resource):
     def get(self):
         """ Get the EVE SSO login URL """
         return {
-            'url': eveapi['crest'].get_authorize_url()
+            'url': eveapi['preston'].get_authorize_url()
         }
 
     def post(self):
-        """ Log the user in using the EVE SSO, CREST, and XML APIs """
+        """ Log the user in using the EVE SSO and ESI """
         try:
             code = request.json['code']
-            auth = eveapi['crest'].authenticate(code)
+            auth = eveapi['preston'].authenticate(code)
             char_info = auth.whoami()
             char_name = char_info['CharacterName']
-            affiliation = eveapi['xml'].eve.CharacterAffiliation(ids=char_info['CharacterID'])['rowset']['row']
-            corporation = affiliation['@corporationName']
-            alliance = affiliation['@allianceName']
+            print(f'Char name for code {code} is {char_name}; fetching affiliation')
+            basic_char_info = eveapi['preston'].get_op('get_characters_character_id', character_id=char_info['CharacterID'])
+            corporation_id = basic_char_info['corporation_id']
+            alliance_id = basic_char_info['alliance_id']
+            corporation_info = eveapi['preston'].get_op('get_corporations_corporation_id', corporation_id=corporation_id)
+            corporation = corporation_info['name']
+            alliance_info = eveapi['preston'].get_op('get_alliances_alliance_id', alliance_id=alliance_id)
+            alliance = alliance_info['name']
             user = User.query.filter_by(name=char_name).first()
             if user:
                 user.corporation = corporation
